@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'semantic.min.css') }}">
+<script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+<script src="http://www.chartjs.org/samples/latest/utils.js"></script>
+<script src="{{ url_for('static', filename = 'semantic.min.js') }}"></script>
+	<title>Welcome to Homepage</title>
+</head>
+<body>
+<script type="text/javascript">
+$(function(){
+  $('.ui.dropdown')
+  .dropdown()
+  ;
+  $("#test").click(function(){
+    //$("#portScanner").modal('show');
+  
+    $.ajax({
+      url:'/openScan/',
+      success:function(response){
+        console.log(response);
+        
+      },
+      error:function(response){
+        //    console.log(response);
+      }  
+    });
+    /* CALL TO PROGRESS BAR REPORT */
+      $('#openScan')
+       .modal('show')
+      ;
+      /* MODAL TIMEOUT */
+      setTimeout(function(){
+      $('#openScan')
+        .modal('hide')
+      window.open("http://localhost:5000/Stats/");
+      }, 10000);
+      
+  });
+  $(".test").modal({
+    closable: true
+  });
+  $("#myPing").click(function(){
+    /* Ping code goes here */
+    alert("Hello PIng request!!");
+    $.ajax({
+      url:'/ping/',
+      success:function(response){
+        console.log(response);
+      },
+      error:function(response){
+        //    console.log(response);
+      }  
+    });
+    });
+    $('#capturePackets').click(function(){
+      /* CALL TO PROGRESS BAR REPORT */
+      $('#capturePacket')
+       .modal('show')
+      ;
+      /* MODAL TIMEOUT */
+      setTimeout(function(){
+      $('#capturePacket')
+        .modal('hide')
+      location.reload(true);
+      }, 30000);
+      $.ajax({
+      url:'/capture/',
+      success:function(response){
+        console.log(response);
+      },
+      error:function(response){
+        //    console.log(response);
+        
+      }  
+    });
+    });
+    $('#myConnected').click(function(){
+      
+      
+      /* SHOW PROGRESS BAR HERE */
+      $('#captureIP')
+       .modal('show')
+      ;
+    });
+    $('#myConnectedList').click(function(){
+        /* CALL TO List of IP */
+      $('#listofIP')
+       .modal('show')
+      ;
+    });
+});
+</script>
+<div class="ui fixed inverted menu">
+    <div class="ui container">
+      <a href="#" class="header item">
+        <big>Network Audit</big>
+      </a>
+      </div>
+    </div>
+  </div>
+<br><br><br>
+<div class="ui container">
+  <div class="ui grid">
+    <div class="row">
+      <div class="sixteen wide column">
+        <div class="ui pilled segment">
+          <button class="ui button teal" id="test">
+            Scan Open Ports
+          </button>
+          <button class="ui button teal" id="capturePackets">
+            Capture Incoming Packets
+          </button>
+          <div class="ui  button teal selection dropdown">
+  <input type="hidden" name="gender">
+  <i class="dropdown icon"></i>
+  <div class="default text">Basic Tools</div>
+  <div class="menu">
+    <div class="item" data-value="1" id="myPing">Ping</div>
+    <div class="item" data-value="0">Tracert</div>
+    <div class="item" data-value="2">ARP Ping</div>
+    <div class="item" data-value="3"><a href="../IPScan/" id="myConnected">Scan Connected IP's</a></div>
+    <div class="item" data-value="4" id="myConnectedList">List Connected IP's</div>
+  </div>
+</div>
+          
+
+
+        <!--OLD PORT SCANNER -->
+
+
+  <!--OLD PORT 
+
+  <div class="ui fullscreen modal" id="portScanner">
+    <i class="close icon"></i>
+    <div class="header">
+      <center>Scan Port Here!!</center>
+    </div>
+    <div class="content">
+      <div class="ui form">
+        <h4 class="ui dividing header">Please add a IP to scan for Open Scan</h4>
+        <div class="field">
+          <label>Feedback</label>
+          <textarea></textarea>
+        </div>
+        <br/>
+      </div>
+    </div>
+    <div class="actions">
+      <div class="ui button">Cancel</div>
+      <div class="ui green button">scan</div>
+    </div>
+  </div>
+
+
+-->
+
+
+        <!--
+          <div class="ui modal test" id="portScanner">
+            <i class="close icon"></i>
+              <div class="header">
+                  Port Scanner
+              </div>
+              <br><br><br>
+                <div class="ui labeled input">
+                    <div class="ui label">
+                        http://
+                    </div>
+                      <input type="text" placeholder="mysite.com" width="100px">
+                </div>         
+            <br><br><br>
+        <div class="actions">
+            <div class="ui black deny button">
+              close
+            </div>
+            <div class="ui positive right labeled icon button">
+               Scan
+            <i class="checkmark icon"></i>
+          </div>
+        </div>
+        </div>
+-->
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="ui container">
+   <div class="ui grid">
+<!--COLUMNS START HERE -->
+<!--FORMAT FOR EACH PACKET -->
+          {%for ip in page_ip%}
+        <div class="four wide column">
+            <div class="ui card">
+  <div class="content">
+    <h4 class="ui sub header">Packet Details:</h4>
+    <div class="ui small feed">
+      <div class="event">
+        <div class="content">
+          <div class="summary">
+             <a>Source Address</a> :{{ip[0]}}
+          </div>
+        </div>
+      </div>
+      <div class="event">
+        <div class="content">
+          <div class="summary">
+             <a>Destination Address :</a>{{ip[1]}}
+          </div>
+        </div>
+      </div>
+      <div class="event">
+        <div class="content">
+          <div class="summary">
+             <a>IP Header Length </a>:{{ip[2]}}
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="content">
+          <div class="summary">
+             <a>IP Header Length </a>:{{ip[3]}}
+          </div>
+        </div>
+      </div>
+
+
+      <div class="event">
+        <div class="content">
+          <div class="summary">
+             <a>TTL </a>:{{ip[4]}}
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="content">
+          <div class="summary">
+             <a>Protocol </a>:{{ip[5]}}
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="content">
+          <div class="summary">
+             <a>Source Port </a>:{{ip[6]}}
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="content">
+          <div class="summary">
+             <a>Destination Port </a>:{{ip[7]}}
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="content">
+          <div class="summary">
+             <a>Sequence: </a>:{{ip[8]}}
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="content">
+          <div class="summary">
+             <a>Acknowledgement</a>:{{ip[9]}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+</div>
+
+
+
+
+
+ {%endfor%}
+
+
+          
+
+
+
+        <!--END PACKECT -->
+
+
+
+
+
+
+
+
+      </div>
+</div>
+
+
+<!--PROGRESS SCAN PORT -->
+
+<div class="ui tiny test modal" id="openScan">
+    <div class="header">
+     <center>Scanning Ports in Network </center> 
+    </div>
+    <div class="content">
+      <center><img src="{{ url_for('static', filename = 'loading.gif') }}"></center>
+    </div>
+  </div>
+
+
+<!-- ENDS HERE -->
+
+
+
+<!--PROGRESS BAR  GOES HERE -->
+<div class="ui tiny test modal" id="capturePacket">
+    <div class="header">
+     <center>Scanning Incoming Packets...</center> 
+    </div>
+    <div class="content">
+      <center><img src="{{ url_for('static', filename = 'loading.gif') }}"></center>
+    </div>
+  </div>
+
+<!--ENDS HERE -->
+
+
+
+<!--PROGRESS BAR  GOES HERE -->
+<div class="ui tiny test modal" id="captureIP">
+    <div class="header">
+     <center>Scanning Connected IP's</center> 
+    </div>
+    <div class="content">
+      <center><img src="{{ url_for('static', filename = 'loading.gif') }}"></center>
+    </div>
+  </div>
+
+<!--ENDS HERE -->
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="ui tiny test modal" id="listofIP">
+    <div class="header">
+     <center>List of Connected IP's</center> 
+    </div>
+    <div class="content">
+      <center>
+        {%for x in data%}
+        <h1>{{x}}</h1>
+        {%endfor%}
+      </center>
+      
+    </div>
+  </div>
+
+<!--ENDS HERE -->
+
+
+
+</body>
+</html>

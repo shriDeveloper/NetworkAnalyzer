@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'semantic.min.css') }}">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/themes/default/assets/fonts/icons.ttf">
+<script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+<script src="http://www.chartjs.org/samples/latest/utils.js"></script>
+<script src="{{ url_for('static', filename = 'semantic.min.js') }}"></script>
+	<title>Statistic for WebPage</title>
+<script type="text/javascript">
+  window.onload = function () {
+    if (! localStorage.justOnce) {
+        localStorage.setItem("justOnce", "true");
+        window.location.reload();
+    }
+}
+</script>
+</head>
+<body>
+<div class="ui fixed inverted menu">
+    <div class="ui container">
+      <a href="#" class="header item">
+        <big>Network Audit</big>
+      </a>
+      </div>
+    </div>
+  </div>
+
+<br/><br/><br/><br/><br/>
+<!--TABLE GOES HERE -->
+<div class="ui container">
+  <div class="ui segment">
+  <table class="ui very basic collapsing celled table">
+  <thead>
+    <tr><th>Host Name</th>
+    <th>Host IP Address</th>
+    <th>Port No.</th>
+    <th>Status</th>
+  </tr></thead>
+  <tbody>
+    
+    <!-- LOOP HERE -->
+
+    {%for port in open_ports%}
+    <tr>
+      <td>
+        <h4 class="ui image header">
+          <div class="content">
+          <i class="desktop icon"></i>  {{port[0]}}
+        </div>
+      </h4></td>
+      <td>
+        {{port[1]}}
+      </td>
+      <td>
+        {{port[2]}}
+      </td>
+      <td>
+        {{port[3]}}
+      </td>
+      
+    </tr>
+    {%endfor%}
+    <!-- ENDS HERE -->
+  </tbody>
+</table>
+</div>
+</div>
+</body>
+</html>
